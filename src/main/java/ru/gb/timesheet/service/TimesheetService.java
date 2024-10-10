@@ -1,13 +1,13 @@
 package ru.gb.timesheet.service;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import ru.gb.timesheet.model.Timesheet;
 import ru.gb.timesheet.repository.ProjectRepository;
 import ru.gb.timesheet.repository.TimesheetRepository;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -15,26 +15,30 @@ import java.util.Optional;
 public class TimesheetService {
 
 
-    private final TimesheetRepository repository;
+    private final TimesheetRepository timesheetRepository;
     private final ProjectRepository projectRepository;
 
-    public TimesheetService(TimesheetRepository repository, ProjectRepository projectRepository) {
-        this.repository = repository;
+    public TimesheetService(TimesheetRepository timesheetRepository, ProjectRepository projectRepository) {
+        this.timesheetRepository = timesheetRepository;
         this.projectRepository = projectRepository;
     }
 
     public Optional<Timesheet> getById(Long id){
-        return repository.getById(id);
-
+        return timesheetRepository.getById(id);
     }
 
-    public List<Timesheet> getAll(){
-        return repository.getAll();
+    public List<Timesheet> findAll(LocalDate createdAtBefore, LocalDate createdAtAfter){
+        return timesheetRepository.findAll();
+    }
+
+    public List<Timesheet> findAll(){
+        return findAll(null, null);
     }
 
     public Timesheet create(Timesheet timesheet){
-        if(projectRepository.findById(timesheet.getProjectId())) return repository.create(timesheet);
-
+        if(Objects.isNull(timesheet.getProjectId())) {
+            throw new NoSuchElementException();
+        }
         //не очень понимаю, как можно обработать в этом случае
         //????
         else {
@@ -44,11 +48,11 @@ public class TimesheetService {
     }
 
     public void  delete(Long id){
-        repository.delete(id);
+        timesheetRepository.delete(id);
     }
 
     public List<Timesheet> getTimesheetByProjectId(Long id){
-        if(projectRepository.findById(id)) return repository.getTimesheetByProjectId(id);
+        if(projectRepository.findById(id)) return timesheetRepository.getTimesheetByProjectId(id);
 
         //?????
         else {

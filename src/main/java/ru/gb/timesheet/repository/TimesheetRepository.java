@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
+import ru.gb.timesheet.TimesheetApplication;
 import ru.gb.timesheet.model.Timesheet;
 
 import java.time.LocalDate;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Component
@@ -25,9 +27,24 @@ public class TimesheetRepository {
                 .findFirst();
 
     }
+    //перегрузка метода с аргументами (можно не использовать)
+    public List<Timesheet> findAll() {
+       return findAll(null, null);
+    }
 
-    public List<Timesheet> getAll(){
-        return List.copyOf(timesheets);
+    public List<Timesheet> findAll(LocalDate createdAtBefore, LocalDate createdAtAfter){
+        Predicate<Timesheet> filter = it -> true;
+
+        if(Objects.nonNull(createdAtBefore)){
+            filter = filter.and(it -> it.getCreatedAt().isBefore(createdAtBefore));
+        }
+        if(Objects.nonNull(createdAtAfter)) {
+            filter = filter.and(it -> it.getCreatedAt().isAfter(createdAtAfter));
+        }
+
+        return timesheets.stream()
+                .filter(filter)
+                .toList();
     }
 
     public Timesheet create(Timesheet timesheet){

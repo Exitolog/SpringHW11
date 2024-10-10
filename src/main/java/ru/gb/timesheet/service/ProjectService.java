@@ -24,8 +24,8 @@ public class ProjectService {
 
     }
 
-    public List<Project> getAll(){
-        return repository.getAll();
+    public List<Project> findAll(){
+        return repository.findAll();
     }
 
     public Project create(Project project){

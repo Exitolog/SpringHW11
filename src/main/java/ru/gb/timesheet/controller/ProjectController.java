@@ -40,8 +40,8 @@ public class ProjectController {
     }
 
     @GetMapping //получить все
-    public ResponseEntity<List<Project>> getAll(){
-        return ResponseEntity.ok(service.getAll());
+    public ResponseEntity<List<Project>> findAll(){
+        return ResponseEntity.ok(service.findAll());
     }
 
     @PostMapping //создание нового ресурса

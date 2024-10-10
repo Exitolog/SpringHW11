@@ -1,17 +1,14 @@
 package ru.gb.timesheet.controller;
 
-import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.gb.timesheet.model.Timesheet;
 import ru.gb.timesheet.service.TimesheetService;
 
-import java.sql.Time;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
@@ -38,10 +35,15 @@ private final TimesheetService service;
     public ResponseEntity<List<Timesheet>> getByProjectId(@PathVariable Long id){
         return ResponseEntity.ok(service.getTimesheetByProjectId(id));
     }
-
+    //timesheets
+    //timesheets?createdAtBefore=2024-07-09
+    //timesheets?createdAtAfter=2024-07-15
     @GetMapping //получить все
-    public ResponseEntity<List<Timesheet>> getAll(){
-        return ResponseEntity.ok(service.getAll());
+    public ResponseEntity<List<Timesheet>> getAll(
+        @RequestParam(required = false) LocalDate createdAtBerore,
+        @RequestParam(required = false) LocalDate createdAtAfter
+    ) {
+        return ResponseEntity.ok(service.findAll());
     }
 
     @PostMapping //создание нового ресурса
@@ -56,4 +58,8 @@ private final TimesheetService service;
         return ResponseEntity.noContent().build();
     }
 
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<?> handleNoSuchElementException(NoSuchElementException e){
+        return ResponseEntity.notFound().build();
+    }
 }

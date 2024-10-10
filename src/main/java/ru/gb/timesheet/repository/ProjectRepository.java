@@ -20,10 +20,9 @@ public class ProjectRepository {
         return projects.stream()
                 .filter(pr -> Objects.equals(pr.getId(),id))
                 .findFirst();
-
     }
 
-    public List<Project> getAll(){
+    public List<Project> findAll(){
         return List.copyOf(projects);
     }
 
