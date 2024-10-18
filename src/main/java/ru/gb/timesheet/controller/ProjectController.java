@@ -7,9 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.gb.timesheet.model.Project;
 import ru.gb.timesheet.model.Timesheet;
 import ru.gb.timesheet.service.ProjectService;
-import ru.gb.timesheet.service.TimesheetService;
 
-import java.sql.Time;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,15 +21,15 @@ public class ProjectController {
         this.service = service;
     }
 
-//    @GetMapping("{id}/timesheets")
-//    public ResponseEntity<List<Timesheet>> getTimesheetsByProjectId(@PathVariable Long id){
-//        return
-//    }
+    @GetMapping("{id}/timesheets")
+    public ResponseEntity<List<Timesheet>> getTimesheetsByProjectId(@PathVariable Long id){
+        return ResponseEntity.ok(service.getTimesheets(id));
+    }
 
 
     @GetMapping("{id}")
     public ResponseEntity<Project> get(@PathVariable Long id){
-        Optional<Project> project = service.getById(id);
+        Optional<Project> project = service.findById(id);
 
         if(project.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(project.get());

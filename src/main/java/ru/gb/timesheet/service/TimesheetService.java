@@ -2,9 +2,11 @@ package ru.gb.timesheet.service;
 
 import org.springframework.stereotype.Service;
 import ru.gb.timesheet.model.Timesheet;
+import ru.gb.timesheet.repository.EmployeeRepository;
 import ru.gb.timesheet.repository.ProjectRepository;
 import ru.gb.timesheet.repository.TimesheetRepository;
 
+import java.sql.Time;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -17,17 +19,20 @@ public class TimesheetService {
 
     private final TimesheetRepository timesheetRepository;
     private final ProjectRepository projectRepository;
+    private final EmployeeRepository employeeRepository;
 
-    public TimesheetService(TimesheetRepository timesheetRepository, ProjectRepository projectRepository) {
+    public TimesheetService(TimesheetRepository timesheetRepository, ProjectRepository projectRepository, EmployeeRepository employeeRepository) {
         this.timesheetRepository = timesheetRepository;
         this.projectRepository = projectRepository;
+        this.employeeRepository = employeeRepository;
     }
 
-    public Optional<Timesheet> getById(Long id){
-        return timesheetRepository.getById(id);
+    public Optional<Timesheet> findById(Long id){
+        return timesheetRepository.findById(id);
     }
 
     public List<Timesheet> findAll(LocalDate createdAtBefore, LocalDate createdAtAfter){
+        // FIXME: Вернуть фильтрацию
         return timesheetRepository.findAll();
     }
 
@@ -36,29 +41,33 @@ public class TimesheetService {
     }
 
     public Timesheet create(Timesheet timesheet){
-        if(Objects.isNull(timesheet.getProjectId())) {
-            throw new NoSuchElementException();
+        if(Objects.isNull(timesheet.getProjectId())){
+            throw new IllegalArgumentException("projectId must not be null");
         }
-        //не очень понимаю, как можно обработать в этом случае
-        //????
-        else {
-            System.out.println("ProjectId с номером " + timesheet.getProjectId() + " не существует");
-            return null;
+
+        if(projectRepository.findById(timesheet.getProjectId()).isEmpty()){
+            throw new NoSuchElementException("Project with id " + timesheet.getProjectId() + " does not exists");
         }
+        timesheet.setCreatedAt(LocalDate.now());
+        return timesheetRepository.save(timesheet);
     }
 
     public void  delete(Long id){
-        timesheetRepository.delete(id);
+        timesheetRepository.deleteById(id);
     }
 
-    public List<Timesheet> getTimesheetByProjectId(Long id){
-        if(projectRepository.findById(id)) return timesheetRepository.getTimesheetByProjectId(id);
+//    public List<Timesheet> getTimesheetByEmployeeId(Long id){
+//        return timesheetRepository.findByEmployeeId(id);
+//    }
 
-        //?????
-        else {
-            System.out.println("Project с id " + id + "не существует");
-            return null;
-        }
-    }
+//    public List<Timesheet> getTimesheetByProjectId(Long id){
+//        if(!projectRepository.findById(id).isEmpty()) {
+//            throw new NoSuchElementException();
+//        }
+//        else {
+//            System.out.println("Project с id " + id + "не существует");
+//            return null;
+//        }
+//    }
 
 }

@@ -6,34 +6,44 @@ import ru.gb.timesheet.model.Timesheet;
 import ru.gb.timesheet.repository.ProjectRepository;
 import ru.gb.timesheet.repository.TimesheetRepository;
 
+import java.sql.Time;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 
 @Service
 public class ProjectService {
 
-    private final ProjectRepository repository;
+    private final ProjectRepository projectRepository;
+    private final TimesheetRepository timesheetRepository;
 
-    public ProjectService(ProjectRepository repository) {
-        this.repository = repository;
+    public ProjectService(ProjectRepository projectRepository, TimesheetRepository timesheetRepository) {
+        this.projectRepository = projectRepository;
+        this.timesheetRepository = timesheetRepository;
     }
 
-    public Optional<Project> getById(Long id){
-        return repository.getById(id);
-
+    public Optional<Project> findById(Long id){
+        return projectRepository.findById(id);
     }
 
     public List<Project> findAll(){
-        return repository.findAll();
+        return projectRepository.findAll();
     }
 
     public Project create(Project project){
-        return repository.create(project);
+        return projectRepository.save(project);
+    }
+
+    public List<Timesheet> getTimesheets(Long id) {
+        if(projectRepository.findById(id).isEmpty()) {
+            throw new NoSuchElementException("Project with id = " + id + " does not exists");
+        }
+         return timesheetRepository.findByProjectId(id);
     }
 
     public void  delete(Long id){
-        repository.delete(id);
+        projectRepository.deleteById(id);
     }
 
 

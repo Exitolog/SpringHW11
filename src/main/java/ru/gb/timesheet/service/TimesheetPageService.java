@@ -15,6 +15,7 @@ public class TimesheetPageService {
 
     private final TimesheetService timesheetService;
     private final ProjectService projectService;
+    private final EmployeeService employeeService;
 
     public List<TimesheetPageDTO> findAll(){
         return timesheetService.findAll().stream().map(this::convert)
@@ -23,10 +24,10 @@ public class TimesheetPageService {
 
 
     public Optional<TimesheetPageDTO> findById(Long id){
-        Optional<Timesheet> timesheetOptional = timesheetService.getById(id);
+        Optional<Timesheet> timesheetOptional = timesheetService.findById(id);
         if(timesheetOptional.isEmpty())return Optional.empty();
         Timesheet timesheet = timesheetOptional.get();
-        Project project = projectService.getById(timesheet.getProjectId()).orElseThrow();
+        Project project = projectService.findById(timesheet.getProjectId()).orElseThrow();
 
         TimesheetPageDTO timesheetPageDTO = new TimesheetPageDTO();
         timesheetPageDTO.setProjectName(project.getName());
@@ -39,7 +40,7 @@ public class TimesheetPageService {
 
 
     public Optional<TimesheetPageDTO> findProject(Long id) {
-        Project project = projectService.getById(id).orElseThrow();
+        Project project = projectService.findById(id).orElseThrow();
         TimesheetPageDTO timesheetPageDTO = new TimesheetPageDTO();
         timesheetPageDTO.setProjectName(project.getName());
         timesheetPageDTO.setProjectId(String.valueOf(project.getId()));
@@ -60,7 +61,7 @@ public class TimesheetPageService {
 
 
     private TimesheetPageDTO convert(Timesheet timesheet){
-        Project project = projectService.getById(timesheet.getProjectId())
+        Project project = projectService.findById(timesheet.getProjectId())
                 .orElseThrow();
 
         TimesheetPageDTO timesheetPageDTO = new TimesheetPageDTO();
