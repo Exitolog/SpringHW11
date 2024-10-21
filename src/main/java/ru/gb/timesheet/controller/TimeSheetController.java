@@ -1,5 +1,7 @@
 package ru.gb.timesheet.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/timesheets")
+@Tag(name = "Расписания", description = "API для работы с таймшитами")
 public class TimeSheetController {
 
 private final TimesheetService timesheetService;
@@ -28,6 +31,7 @@ private final ProjectService projectService;
         this.projectService = projectService;
     }
 
+    @Operation(summary = "Get Timesheet by Id", description = "Получить таймшит по идентификатору")
     @GetMapping("{id}")
     public ResponseEntity<Timesheet> get(@PathVariable Long id){
         Optional<Timesheet> timesheet = timesheetService.findById(id);
@@ -38,10 +42,7 @@ private final ProjectService projectService;
         return ResponseEntity.notFound().build();
     }
 
-//    @GetMapping("/project/{id}")
-//    public ResponseEntity<List<Timesheet>> getByProjectId(@PathVariable Long id){
-//        return ResponseEntity.ok(timesheetService.getTimesheetByProjectId(id));
-//    }
+    @Operation(summary = "Gel all Timesheets", description = "Получить список всех таймшитов")
     @GetMapping //получить все
     public ResponseEntity<List<Timesheet>> getAll(
         @RequestParam(required = false) LocalDate createdAtBerore,
@@ -50,25 +51,18 @@ private final ProjectService projectService;
         return ResponseEntity.ok(timesheetService.findAll());
     }
 
+    @Operation(summary = "Create new Timesheet", description = "Добавить новый таймшит")
     @PostMapping //создание нового ресурса
     public ResponseEntity<Timesheet> create(@RequestBody Timesheet timesheet){
         timesheet = timesheetService.create(timesheet);
         return ResponseEntity.status(HttpStatus.CREATED).body(timesheet);
     }
 
+    @Operation(summary = "Delete timesheet by id", description = "Удалить таймшит по идентификатору")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id){
         timesheetService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
-//    @GetMapping("/employees/{id}/timesheets")
-//    public List<Timesheet> getTimesheetsByEmployeeId(@PathVariable Long employeeId){
-//        return timesheetService.getTimesheetByEmployeeId(employeeId);
-//    }
-
-    @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<?> handleNoSuchElementException(NoSuchElementException e){
-        return ResponseEntity.notFound().build();
-    }
 }
