@@ -5,9 +5,11 @@ public enum RoleName {
 
     private String name;
 
+
     RoleName(String name) {
         this.name = name;
     }
+
 
     public String getName() {
         return name;
