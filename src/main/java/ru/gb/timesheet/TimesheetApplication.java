@@ -14,11 +14,6 @@ import java.util.concurrent.ThreadLocalRandom;
 public class TimesheetApplication {
 
 
-	/**
-	 *
-	 *
-	 */
-
 	public static void main(String[] args) {
 		ApplicationContext ctx = SpringApplication.run(TimesheetApplication.class, args);
 		TimesheetRepository timesheetRepository = ctx.getBean(TimesheetRepository.class);
