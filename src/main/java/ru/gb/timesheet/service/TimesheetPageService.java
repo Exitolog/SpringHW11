@@ -2,7 +2,7 @@ package ru.gb.timesheet.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.gb.timesheet.model.TimesheetPageDTO;
+import ru.gb.timesheet.page.TimesheetPageDTO;
 import ru.gb.timesheet.model.Project;
 import ru.gb.timesheet.model.Timesheet;
 

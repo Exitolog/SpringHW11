@@ -1,4 +1,4 @@
-package ru.gb.timesheet.model;
+package ru.gb.timesheet.page;
 
 
 import lombok.Data;
