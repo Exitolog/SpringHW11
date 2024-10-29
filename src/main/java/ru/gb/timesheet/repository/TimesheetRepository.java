@@ -13,14 +13,6 @@ import java.util.List;
 public interface TimesheetRepository extends JpaRepository<Timesheet, Long> {
 
 
-//    default List<Timesheet> findByCreatedAtBetweenUnsafe(LocalDate min, LocalDate max){
-//        if (min == null && max == null) {
-//            return findAll();
-//        } else if(min == null){
-//            return findByCreatedAtLessThan(max);
-//        }
-//    }
-
     //это запрос на jql = java query language
     // select * from timesheet t where t.projectId = :projectId order by t.created_at desc
     //@Query("select t from Timesheet t where t.projectId = :projectId order by t.createdAt desc")
