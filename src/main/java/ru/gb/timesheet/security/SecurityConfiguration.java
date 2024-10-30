@@ -26,6 +26,12 @@ import java.util.Map;
 public class SecurityConfiguration {
 
     @Bean
+            SecurityFilterChain noSecurity(HttpSecurity httpSecurity) throws Exception {
+        return httpSecurity.authorizeHttpRequests(it -> it.anyRequest().permitAll()).build();
+    }
+
+
+    //@Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(requests -> requests
