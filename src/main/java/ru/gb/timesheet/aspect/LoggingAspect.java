@@ -32,11 +32,11 @@ public class LoggingAspect {
 
     }
 
-    @Before(value = "timesheetServiceMethodsPointcut()")
-    public void beforeTimesheetServiceFindById(JoinPoint joinPoint){
-        String methodName = joinPoint.getSignature().getName();
-        log.info("\n Before -> TimesheetService#{}",methodName);
-    }
+//    @Before(value = "timesheetServiceMethodsPointcut()")
+//    public void beforeTimesheetServiceFindById(JoinPoint joinPoint){
+//        String methodName = joinPoint.getSignature().getName();
+//        log.info("\n Before -> TimesheetService#{}",methodName);
+//    }
 
 
 
@@ -59,8 +59,13 @@ public class LoggingAspect {
         //Значение аргумента, который запрашиваем
         String argument = Arrays.toString(joinPoint.getArgs());
 
+        //Тип возвращаемого значения
+        //String typeName = result.getClass().getName();
 
-        log.info("\n After -> {} = {}", methodName, argument);
+
+
+
+        log.info("After -> {} = {}", methodName, argument);
         //Например (пример вывода): TimesheetService.findById(Long = 3)
     }
 
@@ -68,7 +73,7 @@ public class LoggingAspect {
 //    @AfterThrowing(value = "timesheetServiceMethodsPointcut()", throwing = "ex")
 //    public void afterTimesheetServiceFindById(JoinPoint joinPoint, Exception ex){
 //        String methodName = joinPoint.getSignature().getName();
-//        log.info("After -> TimesheetService#{} -> {}",methodName, ex.getClass().getName());
+//        log.info("AfterThrowing -> TimesheetService#{} -> {}",methodName, ex.getClass().getName());
 //    }
 
 

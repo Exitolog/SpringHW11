@@ -1,6 +1,9 @@
 package ru.gb.timesheet.service;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
+import ru.gb.timesheet.aspect.Recover;
+import ru.gb.timesheet.aspect.Timer;
 import ru.gb.timesheet.model.Timesheet;
 import ru.gb.timesheet.repository.EmployeeRepository;
 import ru.gb.timesheet.repository.ProjectRepository;
@@ -14,6 +17,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@Timer
 public class TimesheetService {
 
 
@@ -27,9 +31,12 @@ public class TimesheetService {
         this.employeeRepository = employeeRepository;
     }
 
+
+    @Timer
+    //@Recover
     public Optional<Timesheet> findById(Long id){
-        System.out.println("LOGS INSIDE METHOD");
-        return timesheetRepository.findById(id);
+        throw new RuntimeException("абракадабра");
+        //return timesheetRepository.findById(id);
     }
 
     public List<Timesheet> findAll(LocalDate createdAtBefore, LocalDate createdAtAfter){
@@ -53,22 +60,9 @@ public class TimesheetService {
         return timesheetRepository.save(timesheet);
     }
 
+    @Timer(enabled = false)
     public void  delete(Long id){
         timesheetRepository.deleteById(id);
     }
-
-//    public List<Timesheet> getTimesheetByEmployeeId(Long id){
-//        return timesheetRepository.findByEmployeeId(id);
-//    }
-
-//    public List<Timesheet> getTimesheetByProjectId(Long id){
-//        if(!projectRepository.findById(id).isEmpty()) {
-//            throw new NoSuchElementException();
-//        }
-//        else {
-//            System.out.println("Project с id " + id + "не существует");
-//            return null;
-//        }
-//    }
 
 }

@@ -27,7 +27,10 @@ public class SecurityConfiguration {
 
     @Bean
             SecurityFilterChain noSecurity(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity.authorizeHttpRequests(it -> it.anyRequest().permitAll()).build();
+        return httpSecurity
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(it -> it.anyRequest().permitAll())
+                .build();
     }
 
 
