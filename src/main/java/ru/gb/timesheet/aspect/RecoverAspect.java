@@ -16,6 +16,28 @@ public class RecoverAspect {
     public void recoverPointcut() {
     }
 
+    //@AfterThrowing(value = "recoverPointcut()", throwing = "ex")
+    public void afterThrowingMethodAspect(JoinPoint joinPoint, Throwable ex){
+        String methodName = joinPoint.getSignature().toShortString();
+        log.info("Recover {} after Exception[{},  {}]", methodName, ex.getClass().getName(), ex.getMessage());
+    }
+
+    //@AfterReturning(value = "recoverPointcut()", returning = "result")
+    public Object afterReturningMethodAspect(JoinPoint joinPoint, Object result){
+        if(result.getClass().isInstance(Object.class)) return null;
+        else return 0;
+    }
+
+    @Around(value = "recoverPointcut()")
+    public void aroundRecoverAspect(ProceedingJoinPoint proceedingJoinPoint){
+        try {
+            proceedingJoinPoint.proceed();
+        } catch (Throwable throwable) {
+            afterThrowingMethodAspect(proceedingJoinPoint, throwable);
+        } finally {
+            afterReturningMethodAspect(proceedingJoinPoint, proceedingJoinPoint.getArgs());
+        }
+    }
 
     //Не удалось поиграться, чтобы узнать тип возвращаемого значения, не добавляя returning
     // , которое есть только у аннотации AfterReturning.

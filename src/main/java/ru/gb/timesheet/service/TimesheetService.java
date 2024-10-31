@@ -33,7 +33,7 @@ public class TimesheetService {
 
 
     @Timer
-    //@Recover
+    @Recover
     public Optional<Timesheet> findById(Long id){
         throw new RuntimeException("абракадабра");
         //return timesheetRepository.findById(id);
