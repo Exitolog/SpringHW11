@@ -13,6 +13,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @SpringBootApplication
 public class TimesheetApplication {
 
+	// TDD - Test Driven Development (Разработка через тестирование)
 
 	public static void main(String[] args) {
 		ApplicationContext ctx = SpringApplication.run(TimesheetApplication.class, args);

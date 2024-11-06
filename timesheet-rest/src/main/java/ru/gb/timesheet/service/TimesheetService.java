@@ -2,8 +2,6 @@ package ru.gb.timesheet.service;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
-import ru.gb.timesheet.aspect.Recover;
-import ru.gb.timesheet.aspect.Timer;
 import ru.gb.timesheet.model.Timesheet;
 import ru.gb.timesheet.repository.EmployeeRepository;
 import ru.gb.timesheet.repository.ProjectRepository;
@@ -17,7 +15,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
-@Timer
+//@Timer
 public class TimesheetService {
 
 
@@ -32,8 +30,8 @@ public class TimesheetService {
     }
 
 
-    @Timer
-    @Recover
+    //@Timer
+    //@Recover
     public Optional<Timesheet> findById(Long id){
         //throw new RuntimeException("абракадабра");
         return timesheetRepository.findById(id);
@@ -60,7 +58,7 @@ public class TimesheetService {
         return timesheetRepository.save(timesheet);
     }
 
-    @Timer(enabled = false)
+    //@Timer(enabled = false)
     public void  delete(Long id){
         timesheetRepository.deleteById(id);
     }
