@@ -5,7 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.data.repository.query.ReturnedType;
 import org.springframework.stereotype.Component;
+
+import javax.print.attribute.standard.JobKOctets;
 
 @Aspect
 @Component
@@ -17,27 +21,38 @@ public class RecoverAspect {
     }
 
     //@AfterThrowing(value = "recoverPointcut()", throwing = "ex")
-    public void afterThrowingMethodAspect(JoinPoint joinPoint, Throwable ex){
-        String methodName = joinPoint.getSignature().toShortString();
-        log.info("Recover {} after Exception[{},  {}]", methodName, ex.getClass().getName(), ex.getMessage());
-    }
-
-    //@AfterReturning(value = "recoverPointcut()", returning = "result")
-    public Object afterReturningMethodAspect(JoinPoint joinPoint, Object result){
-        if(result.getClass().isInstance(Object.class)) return null;
-        else return 0;
-    }
+//    public void afterThrowingMethodAspect(JoinPoint joinPoint, Throwable ex){
+//        String methodName = joinPoint.getSignature().toShortString();
+//        log.info("Recover {} after Exception[{},  {}]", methodName, ex.getClass().getName(), ex.getMessage());
+//        //throw  new RuntimeException("Произошла ошибка");
+//    }
 
     @Around(value = "recoverPointcut()")
-    public void aroundRecoverAspect(ProceedingJoinPoint proceedingJoinPoint){
+    public Object afterReturningMethodAspect(ProceedingJoinPoint joinPoint){
         try {
-            proceedingJoinPoint.proceed();
-        } catch (Throwable throwable) {
-            afterThrowingMethodAspect(proceedingJoinPoint, throwable);
-        } finally {
-            afterReturningMethodAspect(proceedingJoinPoint, proceedingJoinPoint.getArgs());
+           return joinPoint.proceed();
+        } catch (Throwable ex) {
+            String methodName = joinPoint.getSignature().toShortString();
+            String clazz = joinPoint.getSignature().toString().split(" ")[0];
+            // FIXME доделать логику, чтобы достать тип возвращаемого значения
+            Object result = clazz; ////;
+            log.info("Recover {} after Exception[{},  {}]", methodName, ex.getClass().getName(), ex.getMessage());
+            if(result.getClass().isInstance(Object.class)) return null;
+            else return 0;
         }
     }
+
+//    @Around(value = "recoverPointcut()")
+//    public Object aroundRecoverAspect(ProceedingJoinPoint proceedingJoinPoint){
+//        try {
+//            return proceedingJoinPoint.proceed();
+//        } catch (Throwable th) {
+//           return afterThrowingMethodAspect(proceedingJoinPoint, th);
+//        }
+//            String methodName = proceedingJoinPoint.getSignature().toShortString();
+//            log.info("Recover {} after Exception[{},  {}]", methodName, th.getClass().getName(), th.getMessage());
+
+
 
     //Не удалось поиграться, чтобы узнать тип возвращаемого значения, не добавляя returning
     // , которое есть только у аннотации AfterReturning.
@@ -60,5 +75,4 @@ public class RecoverAspect {
 //    }
 
 
-
-}
+    }

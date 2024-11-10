@@ -2,6 +2,7 @@ package ru.gb.timesheet.service;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
+import ru.gb.timesheet.aspect.Recover;
 import ru.gb.timesheet.model.Timesheet;
 import ru.gb.timesheet.repository.EmployeeRepository;
 import ru.gb.timesheet.repository.ProjectRepository;
@@ -31,7 +32,7 @@ public class TimesheetService {
 
 
     //@Timer
-    //@Recover
+    @Recover
     public Optional<Timesheet> findById(Long id){
         //throw new RuntimeException("абракадабра");
         return timesheetRepository.findById(id);
@@ -50,7 +51,6 @@ public class TimesheetService {
         if(Objects.isNull(timesheet.getProjectId())){
             throw new IllegalArgumentException("projectId must not be null");
         }
-
         if(projectRepository.findById(timesheet.getProjectId()).isEmpty()){
             throw new NoSuchElementException("Project with id " + timesheet.getProjectId() + " does not exists");
         }

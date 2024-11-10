@@ -16,7 +16,8 @@
         <module>timesheet-rest</module>
 		<module>timesheet-page</module>
         <module>eureka-server</module>
-    </modules>
+		<module>logging-starter</module>
+	</modules>
 
 
     <properties>

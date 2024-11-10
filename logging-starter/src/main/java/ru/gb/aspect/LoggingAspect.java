@@ -1,21 +1,22 @@
-package ru.gb.timesheet.aspect;
+package ru.gb.aspect;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.*;
 import org.springframework.stereotype.Component;
-import ru.gb.timesheet.model.Timesheet;
+
 
 import java.util.Arrays;
-import java.util.Objects;
-import java.util.Optional;
 
 @Slf4j
 @Aspect
-@Component
+@RequiredArgsConstructor
 public class LoggingAspect {
+
+    private final LoggingProperties properties;
 
     // Before - исполняктся до выполнения метода
     // After - исполняется после выполнения метода = AfterThrowing + AfterReterning
@@ -25,12 +26,40 @@ public class LoggingAspect {
 
     // Bean = TimesheetService, obj = timesheetService
     // proxyTimesheetService(obj)
-
     // Pointcut - точка входа в аспект
-    @Pointcut("execution(* ru.gb.timesheet.service.TimesheetService.*(..))")
-    public void timesheetServiceMethodsPointcut(){
 
+//    @Pointcut("execution(* ru.gb.timesheet.service.TimesheetService.*(..))")
+//    public void timesheetServiceMethodsPointcut(){
+//    }
+
+    @Pointcut("@annotation(ru.gb.aspect.Logging)") //method
+    public void loggingMethodsPointcut(){}
+
+    @Pointcut("@within(ru.gb.aspect.Logging)") // class
+    public void loggingTypePointcut() {}
+
+    @Around(value = "loggingMethodsPointcut() || loggingTypePointcut()")
+    public Object loggingMethod(ProceedingJoinPoint pjp) throws Throwable {
+        String methodName = pjp.getSignature().getName();
+        String argument = Arrays.toString(pjp.getArgs());
+        if(properties.getPrintArgs()) {
+            log.atLevel(properties.getLevel()).log("Before -> TimesheetService#{}, argument = {}",methodName, argument);
+        } else {
+            log.atLevel(properties.getLevel()).log("Before -> TimesheetService#{}", methodName);
+        }
+        try {
+            return pjp.proceed();
+        } finally {
+            if(properties.getPrintArgs()) {
+                log.atLevel(properties.getLevel()).log("After -> TimesheetService#{}, argument = {}",methodName, argument);
+            } else {
+                log.atLevel(properties.getLevel()).log("After -> TimesheetService#{}", methodName);
+            }
+        }
     }
+
+
+
 
 //    @Before(value = "timesheetServiceMethodsPointcut()")
 //    public void beforeTimesheetServiceFindById(JoinPoint joinPoint){
